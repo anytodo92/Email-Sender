@@ -1,5 +1,7 @@
 import TableToolbar from "../../components/TableToolbar"
 import TableHeader from "../../components/TableHeader"
+import NonprofitModal from "../../modals/NonprofitModal"
+import FilterModal from "../../modals/FilterModal"
 
 import { useState } from "react"
 import { Grid, Card, Typography, 
@@ -13,6 +15,9 @@ const NonProfit = () => {
   const [dense, setDense] = useState(false)
   const [selected, setSelected] = useState([])
   const [rowsPerPage, setRowsPerPage] = useState(5)
+
+  const [filterPopupOptions, setFilterPopupOptions] = useState({ opened: false })
+  const [nonprofitPopupOptions, setNonprofitPopupOptions] = useState({ opened: false })
 
   const headCells = [
     {
@@ -106,76 +111,105 @@ const NonProfit = () => {
     setPage(0)
   }
 
+  const showFilterPopup = () => {
+    setFilterPopupOptions({ opened: true })
+  }
+  
+  const showNonprofitPopup = () => {
+    setNonprofitPopupOptions({ opened: true })
+  }
+
+  const handleSearch = (keyword) => {
+
+  }
+
+  const handleSave = (data) => {
+    
+  }
+
+
   return (
-    <NonProfitWrapper>
-     <Typography variant="h6" nowrap component="div">Nonprofit</Typography>
-      <Grid contianer 
-        sx={{ pt: 2 }}>
-        <Card sx={{ p: 2 }}>
-          <TableToolbar numSelected={selected.length} />
-          <Paper>
-            <TableContainer>
-              <Table>
-                <TableHeader 
-                  headCells={headCells}
-                  numSelected={selected.length}
-                  rowCount={rows.length}
-                  onSelectAllClick={handleSelectAllClick} />
-                <TableBody>
-                { rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `row-${index}`;
-                  return (
-                    <TableRow
-                        hover
-                        onClick={(event) => handleClicked(event, row.id)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.id}
-                        selected={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              'aria-labelledby': labelId,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
-                          align="center"
+    <>
+      <NonProfitWrapper>
+        <Typography variant="h6" nowrap component="div">Nonprofit</Typography>
+        <Grid contianer 
+          sx={{ pt: 2 }}>
+          <Card sx={{ p: 2 }}>
+            <TableToolbar 
+              numSelected={selected.length}
+              onFilterClick={showFilterPopup}
+              onAddClick={showNonprofitPopup} />
+            <Paper>
+              <TableContainer>
+                <Table>
+                  <TableHeader 
+                    headCells={headCells}
+                    numSelected={selected.length}
+                    rowCount={rows.length}
+                    onSelectAllClick={handleSelectAllClick} />
+                  <TableBody>
+                  { rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `row-${index}`;
+                    return (
+                      <TableRow
+                          hover
+                          onClick={(event) => handleClicked(event, row.id)}
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.id}
+                          selected={isItemSelected}
                         >
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="center">{row.address}</TableCell>
-                        <TableCell align="center">{row.email}</TableCell>
-                        <TableCell align="center">{row.info}</TableCell>
-                      </TableRow>
-                  )
-                }) }
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={PerPageCountList}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Paper>
-        </Card>
-      </Grid>
-    </NonProfitWrapper>
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              color="primary"
+                              checked={isItemSelected}
+                              inputProps={{
+                                'aria-labelledby': labelId,
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            padding="none"
+                            align="center"
+                          >
+                            {row.name}
+                          </TableCell>
+                          <TableCell align="center">{row.address}</TableCell>
+                          <TableCell align="center">{row.email}</TableCell>
+                          <TableCell align="center">{row.info}</TableCell>
+                        </TableRow>
+                    )
+                  }) }
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={PerPageCountList}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Paper>
+          </Card>
+        </Grid>
+      </NonProfitWrapper>
+      <FilterModal opened={filterPopupOptions.opened}
+        onOk={handleSearch}
+        onCancel={() => setFilterPopupOptions({ opened: false })}/>
+      <NonprofitModal opened={nonprofitPopupOptions.opened}
+        onOk={handleSave}
+        onCancel={() => setNonprofitPopupOptions({ opened: false })} />
+    </>
+    
   )
 }
 

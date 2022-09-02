@@ -2,18 +2,24 @@ import {
   Delete as DeleteIcon,
   MoreVert as MoreVertIcon,
   Add as AddIcon,
-  FilterList as FilterListIcon
+  FilterList as FilterListIcon,
+  Send as SendIcon
 } from "@mui/icons-material"
 
 import { useState } from "react"
+import { useSelector } from "react-redux"
 import { Toolbar, Typography, Tooltip,
   IconButton, Popover, List, ListItemButton, ListItemText, ListItemIcon } from "@mui/material"
 
 import { alpha } from "@mui/material/styles"
 import { MoreOptionWrapper } from "./styled"
 
+import { selectLayout } from "../../redux/reducers/appSlice"
+
 const TableToolbar = (props) => {
-  const { numSelected } = props;
+  const { numSelected, onAddClick, onFilterClick } = props;
+
+  const currentLayout = useSelector(selectLayout)
 
   const [morePopupOptions, setMorePopupOptions] = useState({ opened: false, anchorEl: null })
 
@@ -77,11 +83,13 @@ const TableToolbar = (props) => {
       >
         <MoreOptionWrapper>
           <List>
-            <ListItemButton>
-              <ListItemIcon sx={{ minWidth: 50 }}><AddIcon /></ListItemIcon>
-              <ListItemText>Add</ListItemText>
+            <ListItemButton onClick={onAddClick}>
+              <ListItemIcon sx={{ minWidth: 50 }}>
+                {currentLayout == 'history' ? <SendIcon /> : <AddIcon />}
+              </ListItemIcon>
+              <ListItemText>{currentLayout == 'history' ? 'Send' : 'Add'}</ListItemText>
             </ListItemButton>
-            <ListItemButton>
+            <ListItemButton onClick={onFilterClick}>
               <ListItemIcon sx={{ minWidth: 50 }}><FilterListIcon /></ListItemIcon>
               <ListItemText>Filter</ListItemText>
             </ListItemButton>
