@@ -7,8 +7,8 @@ const Method = {
   GET: 'get',
 }
 
-const getRequest = async (path, data, method) => {
-  const res = await axios.request({
+const getRequest = (path, data, method) => {
+  axios.request({
     url: `${ServerUrl}/${path}`,
     method: method,
     params: data,
@@ -16,7 +16,7 @@ const getRequest = async (path, data, method) => {
     responseType: 'json',
     responseEncoding: 'utf-8'
   })
-  return res
+  .then(res)
 }
 
 export const getFoundationList = async (keyword) => {
