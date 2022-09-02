@@ -80,3 +80,17 @@ export const deleteNonprofitData = async (id) => {
   return res
 }
 
+export const getHistoryList = async (keyword) => {
+  const mock = [
+    { id: 1, from: 'cupcake@gmail.com', to: 'donut@hotmail.com' },
+    { id: 2, from: 'gingerbread@gmail.com', to: 'jelly@gmail.com' },
+    { id: 3, from: 'gingerbread@gmail.com', to: 'marshmallow@hotmail.com' },
+    { id: 4, from: 'lollipop@yahoo.com', to: 'cream@hotmail.com' },
+    { id: 5, from: 'gingerbread@gmail.com', to: 'jelly@gmail.com' }
+  ]
+  
+  const res = !UseMockData ? await getRequest('get_history_list', { keyword: keyword }, Method.GET) : mock
+  
+  return res
+}
+

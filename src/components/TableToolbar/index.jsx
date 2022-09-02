@@ -91,7 +91,7 @@ const TableToolbar = (props) => {
       >
         <MoreOptionWrapper>
           <List>
-            {currentLayout != 'compose'&&
+            {(currentLayout != 'compose' && currentLayout != 'history')&&
             <ListItemButton onClick={onAddClick}>
               <ListItemIcon sx={{ minWidth: 50 }}>
                 {currentLayout == 'history' ? <SendIcon /> : <AddIcon />}
