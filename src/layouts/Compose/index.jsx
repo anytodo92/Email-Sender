@@ -19,7 +19,31 @@ const Compose = () => {
   const [dense, setDense] = useState(false)
   const [selected, setSelected] = useState([])
   const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [foundationList, setFoundationList] = useState([])
+  const [nonprofitList, setNonprofitList] = useState([])
 
+  let inited = false
+  const getFoundationData = (keyword) => {
+    getFoundationList('').then(res => {
+      if (!res) {
+        toast.error(Message.SERVER_ERROR)
+        return
+      }
+
+      setFoundationList(res)
+    })
+  }
+
+  useEffect(() => {
+    if (inited) {
+      return
+    }
+
+    inited = true
+
+    getFoundationData('')
+  }, [])
+  
   const headCells = [
     {
       id: 'name',
@@ -90,37 +114,7 @@ const Compose = () => {
   const [selectedFoundation, setSelectedFoundation] = useState(null)
   const [selectedNonprofitList, setSelectedNonprofitList] = useState([])
 
-  const foundationList = [
-    { id: 1, email: 'cupcake@gmail.com', info: '-' },
-    { id: 2, email: 'donut@gmail.com', info: '-' },
-    { id: 3, email: 'eclair@gmail.com', info: '-' },
-    { id: 4, email: 'frozen-yoghurt@gmail.com', info: '-' },
-    { id: 5, email: 'gingerbread@gmail.com', info: '-' },
-    { id: 6, email: 'honeycomb@gmail.com', info: '-' },
-    { id: 7, email: 'ice-cream@gmail.com', info: '-' },
-    { id: 8, email: 'jelly-bean@gmail.com', info: '-' },
-    { id: 9, email: 'kitKat@gmail.com', info: '-' },
-    { id: 10, email: 'lollipop@gmail.com', info: '-' },
-    { id: 11, email: 'marshmallow@gmail.com', info: '-' },
-    { id: 12, email: 'nougat@gmail.com', info: '-' }
-  ];
-
-  const nonprofitList = [
-    { id: 1, name: 'Cupcake', address: 'Address of Cupcake', email: 'cupcake@gmail.com', info: '-'},
-    { id: 2, name: 'Donut', address: 'Address of Donut', email: 'donut@hotmail.com', info: '-'},
-    { id: 3, name: 'Eclair', address: 'Address of Eclair', email: 'eclair@yahoo.com', info: '-'},
-    { id: 4, name: 'Frozen yoghurt', address: 'Address of Frozen', email: 'frozen@gmail.com', info: '-'},
-    { id: 5, name: 'Gingerbread', address: 'Address of Gingerbread', email: 'gingerbread@gmail.com', info: '-'},
-    { id: 6, name: 'Honeycomb', address: 'Address of Cupcake', email: 'honeycomb@gmail.com', info: '-'},
-    { id: 7, name: 'Ice cream sandwich', address: 'Address of Cream', email: 'cream@hotmail.com', info: '-'},
-    { id: 8, name: 'Jelly Bean', address: 'Address of Jelly', email: 'jelly@gmail.com', info: '-'},
-    { id: 9, name: 'KitKat', address: 'Address of KitKat', email: 'kikat@yahoo.com', info: '-'},
-    { id: 10, name: 'Lollipop', address: 'Address of Lollipop', email: 'lollipop@yahoo.com', info: '-'},
-    { id: 11, name: 'Marshmallow', address: 'Address of Marshmallow', email: 'marshmallow@hotmail.com', info: '-'},
-    { id: 12, name: 'Nougat', address: 'Address of Nougat', email: 'nougat@gmail.com', info: '-'}
-  ];
-
-  const getFoundationList = () => {
+  const mapFoundationList = () => {
     const list = foundationList.map(v => { return { ...v, label: v.email } })
     return list
   }
@@ -158,7 +152,7 @@ const Compose = () => {
               <Autocomplete
                 disablePortal
                 id="sel-foundation"
-                options={getFoundationList()}
+                options={mapFoundationList()}
                 onChange={(e, v) => changeFoundationData(v)}
                 sx={{ width: '100%' }}
                 renderInput={(params) => <TextField {...params} label="Eamil" variant="standard" />}
