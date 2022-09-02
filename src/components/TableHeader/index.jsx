@@ -1,10 +1,10 @@
 import { TableHead, TableRow, 
-  TableCell, Checkbox, Box } from "@mui/material"
+  TableCell, Checkbox } from "@mui/material"
 import { visuallyHidden } from "@mui/utils"
 
 const TableHeader = (props) => {
-  const { onSelectAllClick, order, orderBy, 
-    numSelected, rowCount, onRequestSort, headCells } = props
+  const { onSelectAllClick, 
+    numSelected, rowCount, headCells } = props
  
   return (
     <TableHead>

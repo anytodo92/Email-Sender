@@ -40,8 +40,9 @@ const History = () => {
     },
   ]
 
-  function createData( name, address, email, info) {
+  function createData(id, name, address, email, info) {
     return {
+      id,
       name,
       address,
       email,
@@ -50,32 +51,58 @@ const History = () => {
   }
 
   const rows = [
-    createData('Cupcake', 'Address of Cupcake', 'cupcake@gmail.com', '-'),
-    createData('Donut', 'Address of Donut', 'donut@hotmail.com', '-'),
-    createData('Eclair', 'Address of Eclair', 'eclair@yahoo.com', '-'),
-    createData('Frozen yoghurt', 'Address of Frozen', 'frozen@gmail.com', '-'),
-    createData('Gingerbread', 'Address of Gingerbread', 'gingerbread@gmail.com', '-'),
-    createData('Honeycomb', 'Address of Cupcake', 'cupcake@gmail.com', '-'),
-    createData('Ice cream sandwich', 'Address of Cream', 'cream@hotmail.com', '-'),
-    createData('Jelly Bean', 'Address of Jelly', 'jelly@gmail.com', '-'),
-    createData('KitKat', 'Address of KitKat', 'kikat@yahoo.com', '-'),
-    createData('Lollipop', 'Address of Lollipop', 'lollipop@yahoo.com', '-'),
-    createData('Marshmallow', 'Address of Marshmallow', 'marshmallow@hotmail.com', '-'),
-    createData('Nougat', 'Address of Nougat', 'nougat@gmail.com', '-')
+    createData(1, 'Cupcake', 'Address of Cupcake', 'cupcake@gmail.com', '-'),
+    createData(2, 'Donut', 'Address of Donut', 'donut@hotmail.com', '-'),
+    createData(3, 'Eclair', 'Address of Eclair', 'eclair@yahoo.com', '-'),
+    createData(4, 'Frozen yoghurt', 'Address of Frozen', 'frozen@gmail.com', '-'),
+    createData(5, 'Gingerbread', 'Address of Gingerbread', 'gingerbread@gmail.com', '-'),
+    createData(6, 'Honeycomb', 'Address of Cupcake', 'cupcake@gmail.com', '-'),
+    createData(7, 'Ice cream sandwich', 'Address of Cream', 'cream@hotmail.com', '-'),
+    createData(8, 'Jelly Bean', 'Address of Jelly', 'jelly@gmail.com', '-'),
+    createData(9, 'KitKat', 'Address of KitKat', 'kikat@yahoo.com', '-'),
+    createData(10, 'Lollipop', 'Address of Lollipop', 'lollipop@yahoo.com', '-'),
+    createData(11, 'Marshmallow', 'Address of Marshmallow', 'marshmallow@hotmail.com', '-'),
+    createData(12, 'Nougat', 'Address of Nougat', 'nougat@gmail.com', '-')
   ];
 
-  const isSelected = (name) => selected.indexOf(name) !== -1
+  const isSelected = (id) => selected.indexOf(id) !== -1
 
-  const handleClicked = (event, rowName) => {
+  const handleSelectAllClick = (e) => {
+    if (e.target.checked) {
+      const newSelecteds = rows.map((n) => n.id);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
 
+  const handleClicked = (e, id) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = []
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
   }
 
-  const handleChangePage = () => {
-
+  const handleChangePage = (e, newPage) => {
+    setPage(newPage);
   }
 
-  const handleChangeRowsPerPage = () => {
-
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(parseInt(e.target.value, 10))
+    setPage(0)
   }
 
   return (
@@ -84,24 +111,29 @@ const History = () => {
       <Grid contianer 
         sx={{ pt: 2 }}>
         <Card sx={{ p: 2 }}>
-          <TableToolbar numSelected={0} />
+          <TableToolbar numSelected={selected.length} />
           <Paper>
             <TableContainer>
               <Table>
-                <TableHeader headCells={headCells} />
+                <TableHeader 
+                  headCells={headCells}
+                  numSelected={selected.length}
+                  rowCount={rows.length}
+                  onSelectAllClick={handleSelectAllClick}
+                 />
                 <TableBody>
                 { rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+                  const isItemSelected = isSelected(row.id);
+                  const labelId = `row-${index}`;
                   return (
                     <TableRow
                         hover
-                        onClick={(event) => handleClicked(event, row.name)}
+                        onClick={(e) => handleClicked(e, row.id)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.name}
+                        key={row.id}
                         selected={isItemSelected}
                       >
                         <TableCell padding="checkbox">

@@ -28,41 +28,68 @@ const Foundation = () => {
     },
   ]
 
-  function createData( name, info) {
+  function createData(id, name, info) {
     return {
+      id,
       name,
       info
     };
   }
 
   const rows = [
-    createData('Cupcake', '-'),
-    createData('Donut', '-'),
-    createData('Eclair', '-'),
-    createData('Frozen yoghurt', '-'),
-    createData('Gingerbread', '-'),
-    createData('Honeycomb', '-'),
-    createData('Ice cream sandwich', '-'),
-    createData('Jelly Bean', '-'),
-    createData('KitKat', '-'),
-    createData('Lollipop', '-'),
-    createData('Marshmallow', '-'),
-    createData('Nougat', '-')
+    createData(1, 'Cupcake', '-'),
+    createData(2, 'Donut', '-'),
+    createData(3, 'Eclair', '-'),
+    createData(4, 'Frozen yoghurt', '-'),
+    createData(5, 'Gingerbread', '-'),
+    createData(6, 'Honeycomb', '-'),
+    createData(7, 'Ice cream sandwich', '-'),
+    createData(8, 'Jelly Bean', '-'),
+    createData(9, 'KitKat', '-'),
+    createData(10, 'Lollipop', '-'),
+    createData(11, 'Marshmallow', '-'),
+    createData(12, 'Nougat', '-')
   ];
 
 
-  const isSelected = (name) => selected.indexOf(name) !== -1
+  const isSelected = (id) => selected.indexOf(id) !== -1
 
-  const handleClicked = (event, rowName) => {
+  const handleSelectAllClick = (e) => {
+    if (e.target.checked) {
+      const newSelecteds = rows.map((n) => n.id);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
 
+  const handleClicked = (e, id) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = []
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
   }
 
-  const handleChangePage = () => {
-
+  const handleChangePage = (e, newPage) => {
+    setPage(newPage);
   }
 
-  const handleChangeRowsPerPage = () => {
-
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(parseInt(e.target.value, 10))
+    setPage(0)
   }
 
   return (
@@ -71,24 +98,28 @@ const Foundation = () => {
       <Grid contianer 
         sx={{ pt: 2 }}>
         <Card sx={{ p: 2 }}>
-          <TableToolbar numSelected={0} />
+          <TableToolbar numSelected={selected.length} />
           <Paper>
             <TableContainer>
               <Table>
-                <TableHeader headCells={headCells} />
+                <TableHeader 
+                  headCells={headCells} 
+                  numSelected={selected.length} 
+                  rowCount={rows.length}
+                  onSelectAllClick={handleSelectAllClick} />
                 <TableBody>
                 { rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+                  const isItemSelected = isSelected(row.id);
+                  const labelId = `row-${index}`;
                   return (
                     <TableRow
                         hover
-                        onClick={(event) => handleClicked(event, row.name)}
+                        onClick={(e) => handleClicked(e, row.id)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.name}
+                        key={row.id}
                         selected={isItemSelected}
                       >
                         <TableCell padding="checkbox">
