@@ -38,6 +38,19 @@ const SideBar = () => {
           <List>
             <ListItem disablePadding
               sx={{
+                backgroundColor: currentLayout == 'compose' ? 'purple' : ''
+              }}>
+              <ListItemButton onClick={() => navigate('compose')}>
+                <ListItemText
+                  sx={{
+                    color: currentLayout == 'compose' ? 'white' : ''
+                  }}>
+                Compose
+                </ListItemText>
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding
+              sx={{
                 backgroundColor: currentLayout == 'foundation' ? 'purple' : ''
               }}>
               <ListItemButton onClick={() => navigate('foundation')}>

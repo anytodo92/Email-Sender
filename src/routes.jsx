@@ -1,8 +1,15 @@
 import Foundation from "./layouts/Foundeation"
 import NonProfit from "./layouts/Nonprofit"
 import History from "./layouts/History"
+import Compose from "./layouts/Compose"
 
 const routes = [
+  {
+    name: 'Compose',
+    key: 'compose',
+    route: '/compose',
+    component: <Compose />
+  },
   {
     name: 'Foundations',
     key: 'foundation',

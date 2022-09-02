@@ -3,8 +3,10 @@ import routes from "./routes";
 import SideBar from "./layouts/SideBar";
 import TopBar from "./layouts/TopBar";
 
+import { useEffect } from "react"
+import { useDispatch } from "react-redux";
 import { Box, Toolbar } from "@mui/material"
-
+import { setLayout } from "./redux/reducers/appSlice";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 const AppWrapper = styled.div`
@@ -13,6 +15,25 @@ const AppWrapper = styled.div`
 const MainWrapper = styled(Box)`
 `
 function App() {
+  const location = useLocation();
+  const dispatch = useDispatch();
+  useEffect(() => {    
+    const pathname = location.pathname
+    let layout = 'compose'
+    if (pathname.indexOf('compose') > -1)
+      layout = 'compose'
+    
+    if (pathname.indexOf('foundation') > -1)
+      layout = 'foundation'
+    
+    if (pathname.indexOf('nonprofit') > -1)
+      layout = 'nonprofit'
+    
+    if (pathname.indexOf('history') > -1)
+      layout = 'history'
+      
+    dispatch(setLayout(layout))
+  }, [])
 
   const getRoutes = (allRoutes) => 
     allRoutes.map(route => 

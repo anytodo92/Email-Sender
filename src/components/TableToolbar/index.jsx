@@ -17,7 +17,7 @@ import { MoreOptionWrapper } from "./styled"
 import { selectLayout } from "../../redux/reducers/appSlice"
 
 const TableToolbar = (props) => {
-  const { numSelected, onAddClick, onFilterClick } = props;
+  const { numSelected, title, onAddClick, onFilterClick } = props;
 
   const currentLayout = useSelector(selectLayout)
 
@@ -55,15 +55,23 @@ const TableToolbar = (props) => {
             id="tableTitle"
             component="div"
           >
-            List
+            {title ? title : 'List' }
           </Typography>
         )}
         {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+           currentLayout == 'compose' ? (
+            <Tooltip title="Send">
+              <IconButton onClick={onAddClick}>
+                <SendIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Delete">
+              <IconButton>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          )          
         ) : (
           <Tooltip title="More Optioins">
             <IconButton onClick={moreOption}>
@@ -83,12 +91,15 @@ const TableToolbar = (props) => {
       >
         <MoreOptionWrapper>
           <List>
+            {currentLayout != 'compose'&&
             <ListItemButton onClick={onAddClick}>
               <ListItemIcon sx={{ minWidth: 50 }}>
                 {currentLayout == 'history' ? <SendIcon /> : <AddIcon />}
               </ListItemIcon>
               <ListItemText>{currentLayout == 'history' ? 'Send' : 'Add'}</ListItemText>
             </ListItemButton>
+            }
+            
             <ListItemButton onClick={onFilterClick}>
               <ListItemIcon sx={{ minWidth: 50 }}><FilterListIcon /></ListItemIcon>
               <ListItemText>Filter</ListItemText>
