@@ -1,15 +1,21 @@
 import { useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
 import { Drawer, Box, Toolbar, Divider,
   List, ListItem, ListItemButton, ListItemText } from "@mui/material"
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom"
+import { setLayout, selectLayout } from "../../redux/reducers/appSlice" 
 import {
   SideBarWrapper
 } from "./styled"
 
 const SideBar = () => {
   const navigator = useNavigate()
+  const dispatch = useDispatch()
+  const currentLayout = useSelector(selectLayout)
+
   const navigate = (path) => {
-    navigator(path)
+    dispatch(setLayout(path))
+    navigator(`/${path}`)
   }
   return (
     <SideBarWrapper>
@@ -30,19 +36,43 @@ const SideBar = () => {
           <Toolbar />
           <Divider />
           <List>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => navigate('/foundation')}>
-                <ListItemText>Foundation</ListItemText>
+            <ListItem disablePadding
+              sx={{
+                backgroundColor: currentLayout == 'foundation' ? 'purple' : ''
+              }}>
+              <ListItemButton onClick={() => navigate('foundation')}>
+                <ListItemText
+                  sx={{
+                    color: currentLayout == 'foundation' ? 'white' : ''
+                  }}>
+                Foundation
+                </ListItemText>
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => navigate('/nonprofit')}>
-                <ListItemText>Nonprofit</ListItemText>
+            <ListItem disablePadding
+              sx={{
+                backgroundColor: currentLayout == 'nonprofit' ? 'purple' : ''
+              }}>
+              <ListItemButton onClick={() => navigate('nonprofit')}>
+                <ListItemText
+                  sx={{
+                    color: currentLayout == 'nonprofit' ? 'white' : ''
+                  }}>
+                  Nonprofit
+                </ListItemText>
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => navigate('/history')}>
-                <ListItemText>History</ListItemText>
+            <ListItem disablePadding
+              sx={{
+                backgroundColor: currentLayout == 'history' ? 'purple' : ''
+              }}>
+              <ListItemButton onClick={() => navigate('history')}>
+                <ListItemText
+                  sx={{
+                    color: currentLayout == 'history' ? 'white' : ''
+                  }}>
+                  History
+                </ListItemText>
               </ListItemButton>
             </ListItem>
           </List>
