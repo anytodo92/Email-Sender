@@ -53,6 +53,9 @@ const ComposeModal = (props) => {
   }
 
   const changeNonprofitData = (data) => {
+    if (!data)
+      return
+      
     const t = selectedNonprofitList.filter(v => v.id == data.id)
     if (t.length > 0)
       return 
@@ -61,6 +64,8 @@ const ComposeModal = (props) => {
   }
 
   const changeFoundationData = (data) => {
+    if (!data)
+      return
     setSelectedFoundation(data)
   }
 
@@ -148,7 +153,7 @@ const ComposeModal = (props) => {
           </Row>
           <Row>
             <List sx={{ height: 300, overflowY: 'auto' }}>
-              {selectedNonprofitList.map(data => (
+              {selectedNonprofitList&& selectedNonprofitList.map(data => (
                 <div key={data.id}>
                   <ListItem sx={{ paddingLeft: 1 }}>
                     <ListItemText 
