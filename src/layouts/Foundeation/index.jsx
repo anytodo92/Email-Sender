@@ -6,6 +6,7 @@ import { Grid, Card, Typography,
   TableContainer, Table, TableBody, TableCell, Checkbox, TableRow, 
   Paper, TablePagination } from "@mui/material"
 import { FoundationWrapper } from "./styled"
+import { PerPageCountList } from "../../common/constants"
 
 const Foundation = () => {
   const [page, setPage] = useState(0)
@@ -148,7 +149,7 @@ const Foundation = () => {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={PerPageCountList}
               component="div"
               count={rows.length}
               rowsPerPage={rowsPerPage}

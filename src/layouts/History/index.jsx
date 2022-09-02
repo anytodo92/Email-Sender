@@ -6,6 +6,7 @@ import { Grid, Card, Typography,
   TableContainer, Table, TableBody, TableCell, Checkbox, TableRow, 
   Paper, TablePagination } from "@mui/material"
 import { HistoryWrapper} from "./styled"
+import { PerPageCountList } from "../../common/constants"
 
 const History = () => {
   const [page, setPage] = useState(0)
@@ -164,7 +165,7 @@ const History = () => {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={PerPageCountList}
               component="div"
               count={rows.length}
               rowsPerPage={rowsPerPage}
