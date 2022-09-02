@@ -21,6 +21,8 @@ const NonProfit = () => {
   const [filterPopupOptions, setFilterPopupOptions] = useState({ opened: false })
   const [nonprofitPopupOptions, setNonprofitPopupOptions] = useState({ opened: false })
 
+  const [nonprofitList, setNonprofitList] = useState([])
+
   const headCells = [
     {
       id: 'name',
@@ -54,36 +56,11 @@ const NonProfit = () => {
     }
   ]
 
-  function createData(id, name, address, email, info) {
-    return {
-      id,
-      name,
-      address,
-      email,
-      info
-    };
-  }
-
-  const rows = [
-    createData(1, 'Cupcake', 'Address of Cupcake', 'cupcake@gmail.com', '-'),
-    createData(2, 'Donut', 'Address of Donut', 'donut@hotmail.com', '-'),
-    createData(3, 'Eclair', 'Address of Eclair', 'eclair@yahoo.com', '-'),
-    createData(4, 'Frozen yoghurt', 'Address of Frozen', 'frozen@gmail.com', '-'),
-    createData(5, 'Gingerbread', 'Address of Gingerbread', 'gingerbread@gmail.com', '-'),
-    createData(6, 'Honeycomb', 'Address of Cupcake', 'cupcake@gmail.com', '-'),
-    createData(7, 'Ice cream sandwich', 'Address of Cream', 'cream@hotmail.com', '-'),
-    createData(8, 'Jelly Bean', 'Address of Jelly', 'jelly@gmail.com', '-'),
-    createData(9, 'KitKat', 'Address of KitKat', 'kikat@yahoo.com', '-'),
-    createData(10, 'Lollipop', 'Address of Lollipop', 'lollipop@yahoo.com', '-'),
-    createData(11, 'Marshmallow', 'Address of Marshmallow', 'marshmallow@hotmail.com', '-'),
-    createData(12, 'Nougat', 'Address of Nougat', 'nougat@gmail.com', '-')
-  ];
-
   const isSelected = (id) => selected.indexOf(id) !== -1
 
   const handleSelectAllClick = (e) => {
     if (e.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
+      const newSelecteds = nonprofitList.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -132,7 +109,31 @@ const NonProfit = () => {
   }
 
   const handleSave = (data) => {
-    
+    setFoundationPopupOptions({ opened: false })
+    saveFoundationData(data).then(res => {
+      if (!res || !res.success) {
+        toast.error(Message.SERVER_ERROR)
+        return
+      }
+
+      setFoundationList([{ id: foundationList.length, ...data }, ...foundationList])
+      toast.success(Message.SUCCEED_SAVE_DATA)
+    })
+  }
+
+  const handleDelete = (e, id) => {
+    e.preventDefault()
+
+    deleteFoundationData(id).then(res => {
+      if (!res || !res.success) {
+        toast.error(Message.SERVER_ERROR)
+        return
+      }
+
+      const new_ = foundationList.filter(v => v.id !== id)
+      setFoundationList(new_)
+      toast.success(Message.SUCCEED_DELETE_DATA)
+    })
   }
 
 
@@ -153,17 +154,16 @@ const NonProfit = () => {
                   <TableHeader 
                     headCells={headCells}
                     numSelected={selected.length}
-                    rowCount={rows.length}
+                    rowCount={nonprofitList.length}
                     onSelectAllClick={handleSelectAllClick} />
                   <TableBody>
-                  { rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  { nonprofitList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `row-${index}`;
                     return (
                       <TableRow
                           hover
-                          onClick={(event) => handleClicked(event, row.id)}
                           role="checkbox"
                           aria-checked={isItemSelected}
                           tabIndex={-1}
@@ -172,6 +172,7 @@ const NonProfit = () => {
                         >
                           <TableCell padding="checkbox">
                             <Checkbox
+                              onClick={(event) => handleClicked(event, row.id)}
                               color="primary"
                               checked={isItemSelected}
                               inputProps={{
@@ -191,6 +192,7 @@ const NonProfit = () => {
                           <TableCell align="center">{row.address}</TableCell>
                           <TableCell align="center">{row.email}</TableCell>
                           <TableCell align="center">{row.info}</TableCell>
+                          <TableCell align="center"><IconButton onClick={(e) => handleDelete(e, row.id)}><DeleteIcon /></IconButton></TableCell>
                         </TableRow>
                     )
                   }) }
@@ -200,7 +202,7 @@ const NonProfit = () => {
               <TablePagination
                 rowsPerPageOptions={PerPageCountList}
                 component="div"
-                count={rows.length}
+                count={nonprofitList.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
