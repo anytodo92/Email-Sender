@@ -3,12 +3,15 @@ import TableHeader from "../../components/TableHeader"
 import FoundationModal from "../../modals/FoundationModal"
 import FilterModal from "../../modals/FilterModal"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Grid, Card, Typography, 
   TableContainer, Table, TableBody, TableCell, Checkbox, TableRow, 
-  Paper, TablePagination } from "@mui/material"
+  Paper, TablePagination, IconButton } from "@mui/material"
+import { Delete as DeleteIcon } from "@mui/icons-material"
 import { FoundationWrapper } from "./styled"
-import { PerPageCountList } from "../../common/constants"
+import { Message, PerPageCountList } from "../../common/constants"
+import { toast } from "react-toastify"
+import { getFoundationList, saveFoundationData, deleteFoundationData } from "../../common/services"
 
 const Foundation = () => {
   const [page, setPage] = useState(0)
@@ -17,6 +20,29 @@ const Foundation = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [filterPopupOptions, setFilterPopupOptions] = useState({ opened: false })
   const [foundationPopupOptions, setFoundationPopupOptions] = useState({ opened: false })
+  const [foundationList, setFoundationList] = useState([])
+
+  let inited = false
+  const getFoundationData = (keyword) => {
+    getFoundationList('').then(res => {
+      if (!res) {
+        toast.error(Message.SERVER_ERROR)
+        return
+      }
+
+      setFoundationList(res)
+    })
+  }
+
+  useEffect(() => {
+    if (inited) {
+      return
+    }
+
+    inited = true
+
+    getFoundationData('')
+  }, [])
 
   const headCells = [
     {
@@ -31,37 +57,20 @@ const Foundation = () => {
       disablePadding: false,
       label: 'Infomation',
     },
+    {
+      id: 'func',
+      numeric: false,
+      disablePadding: false,
+      label: '',
+    },
   ]
-
-  function createData(id, email, info) {
-    return {
-      id,
-      email,
-      info
-    };
-  }
-
-  const rows = [
-    createData(1, 'cupcake@gmail.com', '-'),
-    createData(2, 'donut@gmail.com', '-'),
-    createData(3, 'eclair@gmail.com', '-'),
-    createData(4, 'frozen-yoghurt@gmail.com', '-'),
-    createData(5, 'gingerbread@gmail.com', '-'),
-    createData(6, 'honeycomb@gmail.com', '-'),
-    createData(7, 'ice-cream@gmail.com', '-'),
-    createData(8, 'jelly-bean@gmail.com', '-'),
-    createData(9, 'kitKat@gmail.com', '-'),
-    createData(10, 'lollipop@gmail.com', '-'),
-    createData(11, 'marshmallow@gmail.com', '-'),
-    createData(12, 'nougat@gmail.com', '-')
-  ];
 
 
   const isSelected = (id) => selected.indexOf(id) !== -1
 
   const handleSelectAllClick = (e) => {
     if (e.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
+      const newSelecteds = foundationList.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -110,7 +119,31 @@ const Foundation = () => {
   }
 
   const handleSave = (data) => {
+    setFoundationPopupOptions({ opened: false })
+    saveFoundationData(data).then(res => {
+      if (!res || !res.success) {
+        toast.error(Message.SERVER_ERROR)
+        return
+      }
 
+      setFoundationList([{ id: foundationList.length, ...data }, ...foundationList])
+      toast.success(Message.SUCCEED_SAVE_DATA)
+    })
+  }
+
+  const handleDelete = (e, id) => {
+    e.preventDefault()
+
+    deleteFoundationData(id).then(res => {
+      if (!res || !res.success) {
+        toast.error(Message.SERVER_ERROR)
+        return
+      }
+
+      const new_ = foundationList.filter(v => v.id !== id)
+      setFoundationList(new_)
+      toast.success(Message.SUCCEED_DELETE_DATA)
+    })
   }
 
   return (
@@ -130,17 +163,16 @@ const Foundation = () => {
                   <TableHeader 
                     headCells={headCells} 
                     numSelected={selected.length} 
-                    rowCount={rows.length}
+                    rowCount={foundationList.length}
                     onSelectAllClick={handleSelectAllClick} />
                   <TableBody>
-                  { rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  { foundationList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `row-${index}`;
                     return (
                       <TableRow
                           hover
-                          onClick={(e) => handleClicked(e, row.id)}
                           role="checkbox"
                           aria-checked={isItemSelected}
                           tabIndex={-1}
@@ -151,6 +183,7 @@ const Foundation = () => {
                             <Checkbox
                               color="primary"
                               checked={isItemSelected}
+                              onClick={(e) => handleClicked(e, row.id)}
                               inputProps={{
                                 'aria-labelledby': labelId,
                               }}
@@ -166,6 +199,7 @@ const Foundation = () => {
                             {row.email}
                           </TableCell>
                           <TableCell align="center">{row.info}</TableCell>
+                          <TableCell align="center"><IconButton onClick={(e) => handleDelete(e, row.id)}><DeleteIcon /></IconButton></TableCell>
                         </TableRow>
                     )
                   }) }
@@ -175,7 +209,7 @@ const Foundation = () => {
               <TablePagination
                 rowsPerPageOptions={PerPageCountList}
                 component="div"
-                count={rows.length}
+                count={foundationList.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

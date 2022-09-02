@@ -8,6 +8,8 @@ import { useDispatch } from "react-redux";
 import { Box, Toolbar } from "@mui/material"
 import { setLayout } from "./redux/reducers/appSlice";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -41,6 +43,18 @@ function App() {
 
   return (
     <AppWrapper>
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <TopBar />
       <SideBar />
       <MainWrapper

@@ -3,12 +3,14 @@ import TableHeader from "../../components/TableHeader"
 import NonprofitModal from "../../modals/NonprofitModal"
 import FilterModal from "../../modals/FilterModal"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Grid, Card, Typography, 
   TableContainer, Table, TableBody, TableCell, Checkbox, TableRow, 
   Paper, TablePagination } from "@mui/material"
 import { NonProfitWrapper } from "./styled"
 import { PerPageCountList } from "../../common/constants"
+import { toast } from "react-toastify"
+import { getNonprofitList, saveNonprofitData, deleteNonprofitData } from "../../common/services"
 
 const NonProfit = () => {
   const [page, setPage] = useState(0)
@@ -44,6 +46,12 @@ const NonProfit = () => {
       disablePadding: false,
       label: 'Infomation',
     },
+    {
+      id: 'func',
+      numeric: false,
+      disablePadding: false,
+      label: ''
+    }
   ]
 
   function createData(id, name, address, email, info) {
