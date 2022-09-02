@@ -3,7 +3,7 @@ import TableHeader from "../../components/TableHeader"
 import FoundationModal from "../../modals/FoundationModal"
 import FilterModal from "../../modals/FilterModal"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Grid, Typography, 
   TableContainer, Table, TableBody, TableCell, Checkbox, TableRow, 
   TablePagination, Autocomplete, TextField, IconButton,
@@ -11,6 +11,7 @@ import { Grid, Typography,
 import { Delete as DeleteIcon, Preview as PreviewIcon } from "@mui/icons-material"
 import { ComposeWrapper, Row } from "./styled"
 import { PerPageCountList } from "../../common/constants"
+import { getFoundationList, getNonprofitList } from "../../common/services"
 
 const Compose = () => {
   const [filterPopupOptions, setFilterPopupOptions] = useState({ opened: false })
@@ -26,11 +27,20 @@ const Compose = () => {
   const getFoundationData = (keyword) => {
     getFoundationList('').then(res => {
       if (!res) {
-        toast.error(Message.SERVER_ERROR)
         return
       }
 
       setFoundationList(res)
+    })
+  }
+
+  const getNonprofitData = (keyword) => {
+    getNonprofitList('').then(res => {
+      if (!res) {
+        return
+      }
+
+      setNonprofitList(res)
     })
   }
 
@@ -42,8 +52,9 @@ const Compose = () => {
     inited = true
 
     getFoundationData('')
+    getNonprofitData('')
   }, [])
-  
+
   const headCells = [
     {
       id: 'name',
