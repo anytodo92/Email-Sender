@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Dialog, DialogTitle, 
   DialogContent, DialogActions, Button, TextField } from "@mui/material"
 import {
@@ -6,7 +7,7 @@ import {
 
 const NonprofitModal = (props) => {
   const { opened, onOk, onCancel } = props
-
+  const [data, setData] = useState({ name: '', address: '', email: '', info: '' })
   return (
     <Dialog 
       open={opened} 
@@ -24,6 +25,7 @@ const NonprofitModal = (props) => {
             type="text"
             fullWidth
             variant="standard"
+            value={data.name}
           />
         </Row>
         <Row>

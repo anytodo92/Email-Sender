@@ -16,7 +16,6 @@ const getRequest = (path, data, method) => {
     responseType: 'json',
     responseEncoding: 'utf-8'
   })
-  .then(res)
 }
 
 export const getFoundationList = async (keyword) => {

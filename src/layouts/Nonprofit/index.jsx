@@ -6,9 +6,10 @@ import FilterModal from "../../modals/FilterModal"
 import { useState, useEffect } from "react"
 import { Grid, Card, Typography, 
   TableContainer, Table, TableBody, TableCell, Checkbox, TableRow, 
-  Paper, TablePagination } from "@mui/material"
+  Paper, TablePagination, IconButton } from "@mui/material"
+import { Delete as DeleteIcon } from "@mui/icons-material"
 import { NonProfitWrapper } from "./styled"
-import { PerPageCountList } from "../../common/constants"
+import { Message, PerPageCountList } from "../../common/constants"
 import { toast } from "react-toastify"
 import { getNonprofitList, saveNonprofitData, deleteNonprofitData } from "../../common/services"
 
@@ -22,6 +23,28 @@ const NonProfit = () => {
   const [nonprofitPopupOptions, setNonprofitPopupOptions] = useState({ opened: false })
 
   const [nonprofitList, setNonprofitList] = useState([])
+
+  let inited = false
+  const getNonprofitData = (keyword) => {
+    getNonprofitList('').then(res => {
+      if (!res) {
+        toast.error(Message.SERVER_ERROR)
+        return
+      }
+
+      setNonprofitList(res)
+    })
+  }
+
+  useEffect(() => {
+    if (inited) {
+      return
+    }
+
+    inited = true
+
+    getNonprofitData('')
+  }, [])
 
   const headCells = [
     {
@@ -109,14 +132,14 @@ const NonProfit = () => {
   }
 
   const handleSave = (data) => {
-    setFoundationPopupOptions({ opened: false })
-    saveFoundationData(data).then(res => {
+    setNonprofitPopupOptions({ opened: false })
+    saveNonprofitData(data).then(res => {
       if (!res || !res.success) {
         toast.error(Message.SERVER_ERROR)
         return
       }
 
-      setFoundationList([{ id: foundationList.length, ...data }, ...foundationList])
+      setNonprofitList([{ id: nonprofitList.length, ...data }, ...nonprofitList])
       toast.success(Message.SUCCEED_SAVE_DATA)
     })
   }
@@ -124,14 +147,14 @@ const NonProfit = () => {
   const handleDelete = (e, id) => {
     e.preventDefault()
 
-    deleteFoundationData(id).then(res => {
+    deleteNonprofitData(id).then(res => {
       if (!res || !res.success) {
         toast.error(Message.SERVER_ERROR)
         return
       }
 
-      const new_ = foundationList.filter(v => v.id !== id)
-      setFoundationList(new_)
+      const new_ = nonprofitList.filter(v => v.id !== id)
+      setNonprofitList(new_)
       toast.success(Message.SUCCEED_DELETE_DATA)
     })
   }
