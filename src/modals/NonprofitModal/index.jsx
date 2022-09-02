@@ -8,6 +8,25 @@ import {
 const NonprofitModal = (props) => {
   const { opened, onOk, onCancel } = props
   const [data, setData] = useState({ name: '', address: '', email: '', info: '' })
+
+  const handleOkay = (e) => {
+    e.preventDefault()
+
+    if (data.name == '')
+      return
+
+    if (data.address == '')
+      return
+
+    if (data.email == '')
+      return
+
+    if (data.info == '')
+      return
+    
+    onOk(data)
+  }
+
   return (
     <Dialog 
       open={opened} 
@@ -26,6 +45,7 @@ const NonprofitModal = (props) => {
             fullWidth
             variant="standard"
             value={data.name}
+            onChange={e => setData({ ...data, name: e.target.value })}
           />
         </Row>
         <Row>
@@ -37,6 +57,8 @@ const NonprofitModal = (props) => {
             type="text"
             fullWidth
             variant="standard"
+            value={data.address}
+            onChange={e => setData({ ...data, address: e.target.value })}
           />
         </Row>
         <Row>
@@ -48,6 +70,8 @@ const NonprofitModal = (props) => {
             type="email"
             fullWidth
             variant="standard"
+            value={data.email}
+            onChange={e => setData({ ...data, email: e.target.value })}
           />
         </Row>
         <Row>
@@ -59,12 +83,14 @@ const NonprofitModal = (props) => {
             type="text"
             fullWidth
             variant="standard"
+            value={data.info}
+            onChange={e => setData({ ...data, info: e.target.value })}
           />
         </Row>
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel} sx={{ textTransform: 'capitalize' }}>Cancel</Button>
-        <Button onClick={onOk} sx={{ textTransform: 'capitalize' }}>Okay</Button>
+        <Button onClick={handleOkay} sx={{ textTransform: 'capitalize' }}>Okay</Button>
       </DialogActions>
     </Dialog>
   )
